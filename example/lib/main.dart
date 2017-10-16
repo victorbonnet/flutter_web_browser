@@ -14,7 +14,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   
   openBrowserTab() async {
-    await FlutterWebBrowser.openWebPage(url: "https://flutter.io/", androidToolbarColor: "#FF0000");
+    await FlutterWebBrowser.openWebPage(url: "https://flutter.io/", androidToolbarColor: Colors.deepPurple);
   }
 
   @override
