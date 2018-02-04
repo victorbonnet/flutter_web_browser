@@ -42,6 +42,6 @@ android {
 }
 
 dependencies {
-    provided files('tmplibs/flutter.jar')
-    compile 'com.android.support:customtabs:25.1.0'
+    compileOnly files('tmplibs/flutter.jar')
+    implementation 'com.android.support:customtabs:25.1.0'
 }
