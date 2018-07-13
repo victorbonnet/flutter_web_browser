@@ -23,11 +23,7 @@ import 'package:flutter_web_browser/flutter_web_browser.dart';
 ```
 FlutterWebBrowser.openWebPage(url: "https://flutter.io/", androidToolbarColor: Colors.deepPurple);
 ```
-Second 
 
 
-For help getting started with Flutter, view our online
-[documentation](http://flutter.io/).
-
-For help on editing plugin code, view the [documentation](https://flutter.io/platform-plugins/#edit-code).# flutter_web_browser
-
+## License
+This project is licensed under the terms of the MIT license.
