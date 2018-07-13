@@ -1,7 +1,7 @@
 name: flutter_web_browser
 description: A flutter plugin project to open a web page with Chrome Custom Tabs & SFSafariViewController.
 version: 0.9.0
-author: Victor Bonnet
+author: Victor Bonnet<victor.bonnet@gmail.com>
 homepage:
 
 dependencies:
