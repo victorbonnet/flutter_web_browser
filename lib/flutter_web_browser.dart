@@ -7,7 +7,7 @@ class FlutterWebBrowser {
       const MethodChannel('flutter_web_browser');
 
   static Future<dynamic> openWebPage({url, androidToolbarColor}) {
-    var hexColor = null;
+    var hexColor;
     if (androidToolbarColor != null) {
       hexColor = '#'+androidToolbarColor.value.toRadixString(16).padLeft(8, '0');
     }
