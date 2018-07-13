@@ -6,11 +6,11 @@ This plugin is under development, APIs might change.
 
 ## Getting Started
 
-#### Add the package in you project
-Add these lines in your `dev_dependencies`:
+#### Installation
+nstall the library from pub:
 ```
-flutter_web_browser:
-    git: git@github.com:victorbonnet/flutter_web_browser.git
+dependencies:
+  flutter_web_browser: '^0.9.0'
 ```
 
 
