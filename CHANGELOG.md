@@ -1,3 +1,3 @@
-## [0.0.1] - TODO: Add release date.
+## [0.9.0] - Initial release
 
-* TODO: Describe initial release.
+* Open web page web page with [Chrome Custom Tabs](https://developer.chrome.com/multidevice/android/customtabs) & [SFSafariViewController](https://developer.apple.com/documentation/safariservices/sfsafariviewcontroller). 
