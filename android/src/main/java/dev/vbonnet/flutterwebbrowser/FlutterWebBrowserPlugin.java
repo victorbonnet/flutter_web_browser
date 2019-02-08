@@ -3,7 +3,7 @@ package dev.vbonnet.flutterwebbrowser;
 import android.app.Activity;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.customtabs.CustomTabsIntent;
+import androidx.browser.customtabs.CustomTabsIntent;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
