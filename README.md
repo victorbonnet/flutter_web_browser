@@ -10,7 +10,7 @@ This plugin is under development, APIs might change.
 nstall the library from pub:
 ```
 dependencies:
-  flutter_web_browser: "^0.9.0+1"
+  flutter_web_browser: "^0.10.0"
 ```
 
 
