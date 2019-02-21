@@ -1,5 +1,7 @@
 # flutter_web_browser
 
+[![Pub](https://img.shields.io/pub/v/flutter_web_browser.svg)](https://pub.dartlang.org/packages/flutter_web_browser)
+
 A flutter plugin to open a web page with [Chrome Custom Tabs](https://developer.chrome.com/multidevice/android/customtabs) & [SFSafariViewController](https://developer.apple.com/documentation/safariservices/sfsafariviewcontroller).
 
 This plugin is under development, APIs might change.
