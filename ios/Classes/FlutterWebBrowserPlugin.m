@@ -19,8 +19,12 @@
             viewController = viewController.presentedViewController;
         }
         
-        SFSafariViewController *sfvc = [[SFSafariViewController alloc] initWithURL:URL];
-        [viewController presentViewController:sfvc animated:YES completion:nil];
+        if (@available(iOS 9.0, *)) {
+            SFSafariViewController *sfvc = [[SFSafariViewController alloc] initWithURL:URL];
+            [viewController presentViewController:sfvc animated:YES completion:nil];
+        } else {
+            [[UIApplication sharedApplication] openURL:URL];
+        }
         result(nil);
     } else {
         result(FlutterMethodNotImplemented);
