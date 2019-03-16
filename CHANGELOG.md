@@ -1,3 +1,7 @@
+## [0.11.0]
+
+* iOS 8 compatibility & reduced warnings
+
 ## [0.10.0]
 
 * **Breaking change**. Migrate from the deprecated original Android Support
