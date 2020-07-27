@@ -1,54 +1,81 @@
 package dev.vbonnet.flutterwebbrowser;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.net.Uri;
-import androidx.browser.customtabs.CustomTabsIntent;
-
-import io.flutter.plugin.common.MethodCall;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
+import io.flutter.plugin.common.PluginRegistry.ViewDestroyListener;
+import io.flutter.view.FlutterNativeView;
 
-/**
- * FlutterWebBrowserPlugin
- */
-public class FlutterWebBrowserPlugin implements MethodCallHandler {
+/** FlutterWebBrowserPlugin */
+public class FlutterWebBrowserPlugin implements FlutterPlugin, ActivityAware {
 
-  private Activity activity;
+  private MethodChannel methodChannel;
+  private MethodCallHandlerImpl methodCallHandler;
 
   public static void registerWith(Registrar registrar) {
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_web_browser");
-    channel.setMethodCallHandler(new FlutterWebBrowserPlugin(registrar.activity()));
-  }
-
-  private FlutterWebBrowserPlugin(Activity activity) {
-        this.activity = activity;
+    final FlutterWebBrowserPlugin plugin = new FlutterWebBrowserPlugin();
+    plugin.startListening(registrar.messenger());
+    if (registrar.activity() != null) {
+      plugin.setActivity(registrar.activity());
     }
+    registrar.addViewDestroyListener(
+        new ViewDestroyListener() {
+          @Override
+          public boolean onViewDestroy(FlutterNativeView view) {
+            plugin.stopListening();
+            return false;
+          }
+        });
+  }
 
   @Override
-  public void onMethodCall(MethodCall call, Result result) {
-    switch (call.method) {
-      case "openWebPage":
-         openUrl(call, result);
-         break;
-      default:
-        result.notImplemented();
-        break;
-    }
+  public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
+    startListening(binding.getBinaryMessenger());
   }
 
-    private void openUrl(MethodCall call, Result result) {
-      String url = call.argument("url");
-      String toolbarColorArg = call.argument("android_toolbar_color");
+  @Override
+  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+    stopListening();
+  }
 
-      CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
-      if (toolbarColorArg != null) {
-        int toolbarColor = Color.parseColor(toolbarColorArg);
-        builder.setToolbarColor(toolbarColor);
-      }
-      CustomTabsIntent customTabsIntent = builder.build();
-      customTabsIntent.launchUrl(activity, Uri.parse(url));
-    }
+  @Override
+  public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
+    setActivity(binding.getActivity());
+  }
+
+  @Override
+  public void onDetachedFromActivityForConfigChanges() {
+    setActivity(null);
+  }
+
+  @Override
+  public void onReattachedToActivityForConfigChanges(@NonNull ActivityPluginBinding binding) {
+    setActivity(binding.getActivity());
+  }
+
+  @Override
+  public void onDetachedFromActivity() {
+    setActivity(null);
+  }
+
+  private void startListening(BinaryMessenger messenger) {
+    methodChannel = new MethodChannel(messenger, "flutter_web_browser");
+    methodCallHandler = new MethodCallHandlerImpl();
+    methodChannel.setMethodCallHandler(methodCallHandler);
+  }
+
+  private void setActivity(@Nullable Activity activity) {
+    methodCallHandler.setActivity(activity);
+  }
+
+  private void stopListening() {
+    methodChannel.setMethodCallHandler(null);
+    methodChannel = null;
+  }
 }
