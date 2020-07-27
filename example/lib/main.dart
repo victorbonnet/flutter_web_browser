@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_web_browser/flutter_web_browser.dart';
 
@@ -11,9 +13,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  
   openBrowserTab() async {
-    await FlutterWebBrowser.openWebPage(url: "https://flutter.io/", androidToolbarColor: Colors.deepPurple);
+    await FlutterWebBrowser.openWebPage(
+        url: "https://flutter.io/", androidToolbarColor: Colors.deepPurple);
   }
 
   @override
@@ -24,9 +26,33 @@ class _MyAppState extends State<MyApp> {
           title: new Text('Plugin example app'),
         ),
         body: new Center(
-          child: new RaisedButton(
-            onPressed: () => openBrowserTab(),
-            child: new Text('Open Flutter website'),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              RaisedButton(
+                onPressed: () => openBrowserTab(),
+                child: new Text('Open Flutter website'),
+              ),
+              if (Platform.isIOS) ...[
+                Text('test iOS customizations'),
+                RaisedButton(
+                  onPressed: () {
+                    FlutterWebBrowser.openWebPage(
+                      url: "https://flutter.io/",
+                      androidToolbarColor: Colors.deepPurple,
+                      safariVCOptions: SafariViewControllerOptions(
+                        barCollapsingEnabled: true,
+                        preferredBarTintColor: Colors.green,
+                        preferredControlTintColor: Colors.amber,
+                        dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
+                        modalPresentationCapturesStatusBarAppearance: true,
+                      ),
+                    );
+                  },
+                  child: Text('Open Flutter website'),
+                ),
+              ]
+            ],
           ),
         ),
       ),
