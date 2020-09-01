@@ -23,7 +23,17 @@ import 'package:flutter_web_browser/flutter_web_browser.dart';
 
 ##### Open the web page
 ```
-FlutterWebBrowser.openWebPage(url: "https://flutter.io/", androidToolbarColor: Colors.deepPurple);
+FlutterWebBrowser.openWebPage(
+  url: "https://flutter.io/",
+  androidToolbarColor: Colors.deepPurple,
+  safariVCOptions: SafariViewControllerOptions(
+    barCollapsingEnabled: true,
+    preferredBarTintColor: Colors.green,
+    preferredControlTintColor: Colors.amber,
+    dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
+    modalPresentationCapturesStatusBarAppearance: true,
+  ),
+);
 ```
 
 
