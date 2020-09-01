@@ -45,3 +45,5 @@ build/
 .project
 .classpath
 .settings
+example/ios/Flutter/.last_build_id
+.history
