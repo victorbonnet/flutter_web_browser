@@ -41,7 +41,7 @@ public class FlutterWebBrowserPlugin implements MethodCallHandler {
 
     private void openUrl(MethodCall call, Result result) {
       String url = call.argument("url");
-      String toolbarColorArg = call.argument("android_toolbar_color");
+      String toolbarColorArg = call.argument("toolbar_color");
 
       CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
       if (toolbarColorArg != null) {
