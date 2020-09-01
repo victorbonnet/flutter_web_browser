@@ -1,3 +1,9 @@
+## [0.12.0]
+
+* Handle iOS 10 customization
+* Various code cleanup
+* Bug fixes
+
 ## [0.11.0]
 
 * iOS 8 compatibility & reduced warnings
