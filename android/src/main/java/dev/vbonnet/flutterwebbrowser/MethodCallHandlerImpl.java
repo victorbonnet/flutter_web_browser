@@ -3,7 +3,9 @@ package dev.vbonnet.flutterwebbrowser;
 import android.app.Activity;
 import android.graphics.Color;
 import android.net.Uri;
+import androidx.browser.customtabs.CustomTabsClient;
 import androidx.browser.customtabs.CustomTabsIntent;
+import java.util.Arrays;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
@@ -41,7 +43,10 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
       int toolbarColor = Color.parseColor(toolbarColorArg);
       builder.setToolbarColor(toolbarColor);
     }
+
     CustomTabsIntent customTabsIntent = builder.build();
+    String packageName = CustomTabsClient.getPackageName(activity, Arrays.asList("com.android.chrome"));
+    customTabsIntent.intent.setPackage(packageName);
     customTabsIntent.launchUrl(activity, Uri.parse(url));
 
     result.success(null);
