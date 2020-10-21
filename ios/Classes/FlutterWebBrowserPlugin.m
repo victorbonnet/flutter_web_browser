@@ -69,6 +69,8 @@
             [[UIApplication sharedApplication] openURL:URL];
         }
         result(nil);
+    } else if ([@"warmup" isEqualToString:call.method]) {
+        result(YES);
     } else {
         result(FlutterMethodNotImplemented);
     }

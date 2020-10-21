@@ -24,6 +24,8 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
       case "openWebPage":
         openUrl(call, result);
         break;
+      case "warmup":
+        warmup(result);
       default:
         result.notImplemented();
         break;
@@ -45,10 +47,18 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
     }
 
     CustomTabsIntent customTabsIntent = builder.build();
-    String packageName = CustomTabsClient.getPackageName(activity, Arrays.asList("com.android.chrome"));
-    customTabsIntent.intent.setPackage(packageName);
+    customTabsIntent.intent.setPackage(getPackageName());
     customTabsIntent.launchUrl(activity, Uri.parse(url));
 
     result.success(null);
+  }
+
+  private void warmup(Result result) {
+    boolean success = CustomTabsClient.connectAndInitialize(activity, getPackageName());
+    result.success(success);
+  }
+
+  private String getPackageName() {
+    return CustomTabsClient.getPackageName(activity, Arrays.asList("com.android.chrome"));
   }
 }
