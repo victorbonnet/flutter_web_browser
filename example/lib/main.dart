@@ -14,8 +14,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   openBrowserTab() async {
-    await FlutterWebBrowser.openWebPage(
-        url: "https://flutter.io/", androidToolbarColor: Colors.deepPurple);
+    await FlutterWebBrowser.openWebPage(url: "https://flutter.io/");
   }
 
   @override
@@ -33,13 +32,33 @@ class _MyAppState extends State<MyApp> {
                 onPressed: () => openBrowserTab(),
                 child: new Text('Open Flutter website'),
               ),
+              if (Platform.isAndroid) ...[
+                Text('test Android customizations'),
+                RaisedButton(
+                  onPressed: () {
+                    FlutterWebBrowser.openWebPage(
+                      url: "https://flutter.io/",
+                      customTabsOptions: CustomTabsOptions(
+                        colorScheme: CustomTabsColorScheme.dark,
+                        toolbarColor: Colors.deepPurple,
+                        secondaryToolbarColor: Colors.green,
+                        navigationBarColor: Colors.amber,
+                        addDefaultShareMenuItem: true,
+                        instantAppsEnabled: true,
+                        showTitle: true,
+                        urlBarHidingEnabled: true,
+                      ),
+                    );
+                  },
+                  child: Text('Open Flutter website'),
+                ),
+              ],
               if (Platform.isIOS) ...[
                 Text('test iOS customizations'),
                 RaisedButton(
                   onPressed: () {
                     FlutterWebBrowser.openWebPage(
                       url: "https://flutter.io/",
-                      androidToolbarColor: Colors.deepPurple,
                       safariVCOptions: SafariViewControllerOptions(
                         barCollapsingEnabled: true,
                         preferredBarTintColor: Colors.green,

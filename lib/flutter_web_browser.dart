@@ -27,6 +27,34 @@ class SafariViewControllerOptions {
   });
 }
 
+enum CustomTabsColorScheme {
+  system, // 0x00000000
+  light, // 0x00000001
+  dark, // 0x00000002
+}
+
+class CustomTabsOptions {
+  final CustomTabsColorScheme colorScheme;
+  final Color toolbarColor;
+  final Color secondaryToolbarColor;
+  final Color navigationBarColor;
+  final bool instantAppsEnabled;
+  final bool addDefaultShareMenuItem;
+  final bool showTitle;
+  final bool urlBarHidingEnabled;
+
+  const CustomTabsOptions({
+    this.colorScheme = CustomTabsColorScheme.system,
+    this.toolbarColor,
+    this.secondaryToolbarColor,
+    this.navigationBarColor,
+    this.instantAppsEnabled = false,
+    this.addDefaultShareMenuItem = false,
+    this.showTitle = false,
+    this.urlBarHidingEnabled = false,
+  });
+}
+
 extension _hexColor on Color {
   /// Returns the color value as ARGB hex value.
   String get hexColor {
@@ -40,21 +68,41 @@ class FlutterWebBrowser {
 
   static Future<dynamic> openWebPage({
     String url,
-    Color androidToolbarColor,
+    CustomTabsOptions customTabsOptions = const CustomTabsOptions(),
     SafariViewControllerOptions safariVCOptions =
         const SafariViewControllerOptions(),
+    @Deprecated("Use customTabsOptions instead") Color androidToolbarColor,
   }) {
     assert(url != null);
+    assert(customTabsOptions != null);
     assert(safariVCOptions != null);
 
-    var hexColor;
     if (androidToolbarColor != null) {
-      hexColor = androidToolbarColor?.hexColor;
+      customTabsOptions = CustomTabsOptions(
+        colorScheme: customTabsOptions.colorScheme,
+        toolbarColor: androidToolbarColor,
+        secondaryToolbarColor: customTabsOptions.secondaryToolbarColor,
+        navigationBarColor: customTabsOptions.navigationBarColor,
+        instantAppsEnabled: customTabsOptions.instantAppsEnabled,
+        addDefaultShareMenuItem: customTabsOptions.addDefaultShareMenuItem,
+        showTitle: customTabsOptions.showTitle,
+        urlBarHidingEnabled: customTabsOptions.urlBarHidingEnabled,
+      );
     }
 
     return _channel.invokeMethod('openWebPage', {
       "url": url,
-      "android_toolbar_color": hexColor,
+      'android_options': {
+        'colorScheme': customTabsOptions.colorScheme.index,
+        'navigationBarColor': customTabsOptions.navigationBarColor?.hexColor,
+        'toolbarColor': customTabsOptions.toolbarColor?.hexColor,
+        'secondaryToolbarColor':
+            customTabsOptions.secondaryToolbarColor?.hexColor,
+        'instantAppsEnabled': customTabsOptions.instantAppsEnabled,
+        'addDefaultShareMenuItem': customTabsOptions.addDefaultShareMenuItem,
+        'showTitle': customTabsOptions.showTitle,
+        'urlBarHidingEnabled': customTabsOptions.urlBarHidingEnabled,
+      },
       'ios_options': {
         'barCollapsingEnabled': safariVCOptions.barCollapsingEnabled,
         'entersReaderIfAvailable': safariVCOptions.entersReaderIfAvailable,
