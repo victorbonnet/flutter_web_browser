@@ -1,3 +1,9 @@
+## [0.13.0]
+
+* Additional options for ChromeCustomTab
+* Warmup api for Chrome
+* Improve Browser selection on Android
+
 ## [0.12.0]
 
 * Handle iOS 10 customization
