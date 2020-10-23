@@ -28,6 +28,7 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
         break;
       case "warmup":
         warmup(result);
+        break;
       default:
         result.notImplemented();
         break;
