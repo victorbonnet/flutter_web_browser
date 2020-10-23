@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.net.Uri;
 import androidx.browser.customtabs.CustomTabColorSchemeParams;
+import androidx.browser.customtabs.CustomTabsClient;
 import androidx.browser.customtabs.CustomTabsIntent;
+import java.util.Arrays;
 import java.util.HashMap;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -23,6 +25,9 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
     switch (call.method) {
       case "openWebPage":
         openUrl(call, result);
+        break;
+      case "warmup":
+        warmup(result);
         break;
       default:
         result.notImplemented();
@@ -70,8 +75,18 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
     }
 
     CustomTabsIntent customTabsIntent = builder.build();
+    customTabsIntent.intent.setPackage(getPackageName());
     customTabsIntent.launchUrl(activity, Uri.parse(url));
 
     result.success(null);
+  }
+
+  private void warmup(Result result) {
+    boolean success = CustomTabsClient.connectAndInitialize(activity, getPackageName());
+    result.success(success);
+  }
+
+  private String getPackageName() {
+    return CustomTabsClient.getPackageName(activity, Arrays.asList("com.android.chrome"));
   }
 }

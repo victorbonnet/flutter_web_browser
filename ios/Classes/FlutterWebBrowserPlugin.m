@@ -21,7 +21,6 @@
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"openWebPage" isEqualToString:call.method]) {
         NSString *url = call.arguments[@"url"];
-        NSString *toolbarColorArg = call.arguments[@"toolbar_color"];
         NSString *controlColorArg = call.arguments[@"ios_control_color"];
         NSURL *URL = [NSURL URLWithString:url];
         UIViewController *viewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
@@ -69,6 +68,8 @@
             [[UIApplication sharedApplication] openURL:URL];
         }
         result(nil);
+    } else if ([@"warmup" isEqualToString:call.method]) {
+        result([NSNumber numberWithBool:YES]);
     } else {
         result(FlutterMethodNotImplemented);
     }
