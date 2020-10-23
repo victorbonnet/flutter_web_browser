@@ -12,7 +12,7 @@ This plugin is under development, APIs might change.
 nstall the library from pub:
 ```
 dependencies:
-  flutter_web_browser: "^0.12.0"
+  flutter_web_browser: "^0.13.0"
 ```
 
 
@@ -25,7 +25,16 @@ import 'package:flutter_web_browser/flutter_web_browser.dart';
 ```
 FlutterWebBrowser.openWebPage(
   url: "https://flutter.io/",
-  androidToolbarColor: Colors.deepPurple,
+  customTabsOptions: CustomTabsOptions(
+    colorScheme: CustomTabsColorScheme.dark,
+    toolbarColor: Colors.deepPurple,
+    secondaryToolbarColor: Colors.green,
+    navigationBarColor: Colors.amber,
+    addDefaultShareMenuItem: true,
+    instantAppsEnabled: true,
+    showTitle: true,
+    urlBarHidingEnabled: true,
+  ),
   safariVCOptions: SafariViewControllerOptions(
     barCollapsingEnabled: true,
     preferredBarTintColor: Colors.green,
