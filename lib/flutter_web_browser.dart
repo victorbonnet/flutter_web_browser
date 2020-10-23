@@ -66,6 +66,10 @@ class FlutterWebBrowser {
   static const MethodChannel _channel =
       const MethodChannel('flutter_web_browser');
 
+  static Future<bool> warmup() {
+    return _channel.invokeMethod<bool>('warmup');
+  }
+
   static Future<dynamic> openWebPage({
     String url,
     CustomTabsOptions customTabsOptions = const CustomTabsOptions(),

@@ -29,6 +29,10 @@ class _MyAppState extends State<MyApp> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               RaisedButton(
+                onPressed: () => FlutterWebBrowser.warmup(),
+                child: new Text('Warmup browser website'),
+              ),
+              RaisedButton(
                 onPressed: () => openBrowserTab(),
                 child: new Text('Open Flutter website'),
               ),
