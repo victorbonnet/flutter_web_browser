@@ -9,7 +9,7 @@ This plugin is under development, APIs might change.
 ## Getting Started
 
 #### Installation
-nstall the library from pub:
+Install the library from pub:
 ```
 dependencies:
   flutter_web_browser: "^0.13.0"
