@@ -12,7 +12,7 @@ This plugin is under development, APIs might change.
 Install the library from pub:
 ```
 dependencies:
-  flutter_web_browser: "^0.13.0"
+  flutter_web_browser: "^0.13.1"
 ```
 
 

@@ -1,3 +1,7 @@
+## [0.13.1]
+
+* Fix boolean configs in iOS
+
 ## [0.13.0]
 
 * Additional options for ChromeCustomTab
