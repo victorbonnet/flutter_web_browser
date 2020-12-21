@@ -37,8 +37,8 @@
                 SFSafariViewController *sfvc;
                 if (@available(iOS 11.0, *)) {
                     SFSafariViewControllerConfiguration *config = [[SFSafariViewControllerConfiguration alloc] init];
-                    config.barCollapsingEnabled = options[@"barCollapsingEnabled"];
-                    config.entersReaderIfAvailable = options[@"entersReaderIfAvailable"];
+                    config.barCollapsingEnabled = [options[@"barCollapsingEnabled"] boolValue];
+                    config.entersReaderIfAvailable = [options[@"entersReaderIfAvailable"] boolValue];
                     
                     sfvc = [[SFSafariViewController alloc] initWithURL:URL configuration:config];
                     
@@ -58,7 +58,7 @@
                     }
                 }
                 
-                sfvc.modalPresentationCapturesStatusBarAppearance = options[@"modalPresentationCapturesStatusBarAppearance"];
+                sfvc.modalPresentationCapturesStatusBarAppearance = [options[@"modalPresentationCapturesStatusBarAppearance"] boolValue];
 
                 [viewController presentViewController:sfvc animated:YES completion:nil];
             } else {
