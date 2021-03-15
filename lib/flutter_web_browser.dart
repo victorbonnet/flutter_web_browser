@@ -12,10 +12,10 @@ enum SafariViewControllerDismissButtonStyle {
 class SafariViewControllerOptions {
   final bool barCollapsingEnabled;
   final bool entersReaderIfAvailable;
-  final Color preferredBarTintColor;
-  final Color preferredControlTintColor;
+  final Color? preferredBarTintColor;
+  final Color? preferredControlTintColor;
   final bool modalPresentationCapturesStatusBarAppearance;
-  final SafariViewControllerDismissButtonStyle dismissButtonStyle;
+  final SafariViewControllerDismissButtonStyle? dismissButtonStyle;
 
   const SafariViewControllerOptions({
     this.barCollapsingEnabled = false,
@@ -35,9 +35,9 @@ enum CustomTabsColorScheme {
 
 class CustomTabsOptions {
   final CustomTabsColorScheme colorScheme;
-  final Color toolbarColor;
-  final Color secondaryToolbarColor;
-  final Color navigationBarColor;
+  final Color? toolbarColor;
+  final Color? secondaryToolbarColor;
+  final Color? navigationBarColor;
   final bool instantAppsEnabled;
   final bool addDefaultShareMenuItem;
   final bool showTitle;
@@ -66,34 +66,16 @@ class FlutterWebBrowser {
   static const MethodChannel _channel =
       const MethodChannel('flutter_web_browser');
 
-  static Future<bool> warmup() {
-    return _channel.invokeMethod<bool>('warmup');
+  static Future<bool> warmup() async {
+    return await _channel.invokeMethod<bool>('warmup') ?? true;
   }
 
-  static Future<dynamic> openWebPage({
-    String url,
+  static Future<void> openWebPage({
+    required String url,
     CustomTabsOptions customTabsOptions = const CustomTabsOptions(),
     SafariViewControllerOptions safariVCOptions =
         const SafariViewControllerOptions(),
-    @Deprecated("Use customTabsOptions instead") Color androidToolbarColor,
   }) {
-    assert(url != null);
-    assert(customTabsOptions != null);
-    assert(safariVCOptions != null);
-
-    if (androidToolbarColor != null) {
-      customTabsOptions = CustomTabsOptions(
-        colorScheme: customTabsOptions.colorScheme,
-        toolbarColor: androidToolbarColor,
-        secondaryToolbarColor: customTabsOptions.secondaryToolbarColor,
-        navigationBarColor: customTabsOptions.navigationBarColor,
-        instantAppsEnabled: customTabsOptions.instantAppsEnabled,
-        addDefaultShareMenuItem: customTabsOptions.addDefaultShareMenuItem,
-        showTitle: customTabsOptions.showTitle,
-        urlBarHidingEnabled: customTabsOptions.urlBarHidingEnabled,
-      );
-    }
-
     return _channel.invokeMethod('openWebPage', {
       "url": url,
       'android_options': {

@@ -1,3 +1,6 @@
+## [1.0.0-nullsafety.0]
+* Opt into null-safety
+
 ## [0.13.1]
 
 * Fix boolean configs in iOS

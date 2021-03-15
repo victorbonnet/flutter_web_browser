@@ -2,7 +2,7 @@ name: flutter_web_browser_example
 description: Demonstrates how to use the flutter_web_browser plugin.
 
 environment:
-  sdk: '>=2.10.0 <3.0.0'
+  sdk: '>=2.12.0-259.12.beta <3.0.0'
 
 dependencies:
   flutter:
