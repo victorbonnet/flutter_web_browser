@@ -1,4 +1,4 @@
-## [1.0.0-nullsafety.0]
+## [0.14.0]
 * Opt into null-safety
 
 ## [0.13.1]
