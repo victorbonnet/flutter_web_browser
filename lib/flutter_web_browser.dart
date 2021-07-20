@@ -62,12 +62,45 @@ extension _hexColor on Color {
   }
 }
 
+abstract class BrowserEvent {
+  static BrowserEvent? fromMap(Map<String, dynamic> map) {
+    if (map['event'] == 'redirect') {
+      return RedirectEvent(Uri.parse(map['url']));
+    }
+    if (map['event'] == 'close') {
+      return CloseEvent();
+    }
+
+    return null;
+  }
+}
+
+class RedirectEvent extends BrowserEvent {
+  RedirectEvent(this.url);
+
+  final Uri url;
+}
+
+class CloseEvent extends BrowserEvent {}
+
 class FlutterWebBrowser {
-  static const MethodChannel _channel =
-      const MethodChannel('flutter_web_browser');
+  static const NS = 'flutter_web_browser';
+  static const MethodChannel _channel = const MethodChannel(NS);
+  static const EventChannel _eventChannel = const EventChannel('$NS/events');
 
   static Future<bool> warmup() async {
     return await _channel.invokeMethod<bool>('warmup') ?? true;
+  }
+
+  static Future<void> close() async {
+    await _channel.invokeMethod<void>('close');
+  }
+
+  static Stream<BrowserEvent> events() {
+    return _eventChannel
+        .receiveBroadcastStream()
+        .map<Map<String, String>>((event) => Map<String, String>.from(event))
+        .map((event) => BrowserEvent.fromMap(event)!);
   }
 
   static Future<void> openWebPage({

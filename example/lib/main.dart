@@ -13,8 +13,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  openBrowserTab() async {
+  Future<void> openBrowserTab() async {
     await FlutterWebBrowser.openWebPage(url: "https://flutter.io/");
+  }
+
+  List<BrowserEvent> _events = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    FlutterWebBrowser.events().listen((event) {
+      setState(() {
+        _events.add(event);
+      });
+    });
   }
 
   @override
@@ -25,57 +39,84 @@ class _MyAppState extends State<MyApp> {
           title: new Text('Plugin example app'),
         ),
         body: new Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              RaisedButton(
-                onPressed: () => FlutterWebBrowser.warmup(),
-                child: new Text('Warmup browser website'),
-              ),
-              RaisedButton(
-                onPressed: () => openBrowserTab(),
-                child: new Text('Open Flutter website'),
-              ),
-              if (Platform.isAndroid) ...[
-                Text('test Android customizations'),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
                 RaisedButton(
-                  onPressed: () {
-                    FlutterWebBrowser.openWebPage(
-                      url: "https://flutter.io/",
-                      customTabsOptions: CustomTabsOptions(
-                        colorScheme: CustomTabsColorScheme.dark,
-                        toolbarColor: Colors.deepPurple,
-                        secondaryToolbarColor: Colors.green,
-                        navigationBarColor: Colors.amber,
-                        addDefaultShareMenuItem: true,
-                        instantAppsEnabled: true,
-                        showTitle: true,
-                        urlBarHidingEnabled: true,
-                      ),
-                    );
-                  },
-                  child: Text('Open Flutter website'),
+                  onPressed: () => FlutterWebBrowser.warmup(),
+                  child: new Text('Warmup browser website'),
                 ),
+                RaisedButton(
+                  onPressed: () => openBrowserTab(),
+                  child: new Text('Open Flutter website'),
+                ),
+                RaisedButton(
+                  onPressed: () => openBrowserTab().then(
+                    (value) => Future.delayed(
+                      Duration(seconds: 5),
+                      () => FlutterWebBrowser.close(),
+                    ),
+                  ),
+                  child:
+                      new Text('Open Flutter website & close after 5 seconds'),
+                ),
+                if (Platform.isAndroid) ...[
+                  Text('test Android customizations'),
+                  RaisedButton(
+                    onPressed: () {
+                      FlutterWebBrowser.openWebPage(
+                        url: "https://flutter.io/",
+                        customTabsOptions: CustomTabsOptions(
+                          colorScheme: CustomTabsColorScheme.dark,
+                          toolbarColor: Colors.deepPurple,
+                          secondaryToolbarColor: Colors.green,
+                          navigationBarColor: Colors.amber,
+                          addDefaultShareMenuItem: true,
+                          instantAppsEnabled: true,
+                          showTitle: true,
+                          urlBarHidingEnabled: true,
+                        ),
+                      );
+                    },
+                    child: Text('Open Flutter website'),
+                  ),
+                ],
+                if (Platform.isIOS) ...[
+                  Text('test iOS customizations'),
+                  RaisedButton(
+                    onPressed: () {
+                      FlutterWebBrowser.openWebPage(
+                        url: "https://flutter.io/",
+                        safariVCOptions: SafariViewControllerOptions(
+                          barCollapsingEnabled: true,
+                          preferredBarTintColor: Colors.green,
+                          preferredControlTintColor: Colors.amber,
+                          dismissButtonStyle:
+                              SafariViewControllerDismissButtonStyle.close,
+                          modalPresentationCapturesStatusBarAppearance: true,
+                        ),
+                      );
+                    },
+                    child: Text('Open Flutter website'),
+                  ),
+                  Divider(),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: _events.map((e) {
+                      if (e is RedirectEvent) {
+                        return Text('redirect: ${e.url}');
+                      }
+                      if (e is CloseEvent) {
+                        return Text('closed');
+                      }
+
+                      return Text('Unknown event: $e');
+                    }).toList(),
+                  ),
+                ]
               ],
-              if (Platform.isIOS) ...[
-                Text('test iOS customizations'),
-                RaisedButton(
-                  onPressed: () {
-                    FlutterWebBrowser.openWebPage(
-                      url: "https://flutter.io/",
-                      safariVCOptions: SafariViewControllerOptions(
-                        barCollapsingEnabled: true,
-                        preferredBarTintColor: Colors.green,
-                        preferredControlTintColor: Colors.amber,
-                        dismissButtonStyle: SafariViewControllerDismissButtonStyle.close,
-                        modalPresentationCapturesStatusBarAppearance: true,
-                      ),
-                    );
-                  },
-                  child: Text('Open Flutter website'),
-                ),
-              ]
-            ],
+            ),
           ),
         ),
       ),
