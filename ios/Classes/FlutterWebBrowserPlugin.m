@@ -85,18 +85,18 @@
     } else if ([@"warmup" isEqualToString:call.method]) {
         result([NSNumber numberWithBool:YES]);
     } else if ([@"close" isEqualToString:call.method]) {
-      if (_currentController) {
-        [_currentController dismissViewControllerAnimated:YES completion:nil];
+        if (_currentController) {
+            [_currentController dismissViewControllerAnimated:YES completion:nil];
 
-        // SafariViewController does not emit the `safariViewControllerDidFinish` when dismissed.
-        if (_eventSink) {
-          _eventSink(@{
-            @"event": @"close",
-          });
+            // SafariViewController does not call `safariViewControllerDidFinish` when dismissed manually,
+            // therefore a manual close event needs to be emitted.
+            if (_eventSink) {
+                _eventSink(@{ @"event": @"close" });
+            }
+
+            _currentController = nil;
         }
-
-      }
-      result(nil);
+        result(nil);
     } else {
         result(FlutterMethodNotImplemented);
     }
@@ -119,22 +119,20 @@
 #pragma mark - SFSafariViewControllerDelegate
 
 - (void)safariViewControllerDidFinish:(SFSafariViewController *)controller {
-  _currentController = nil;
-  
-  if (_eventSink) {
-    _eventSink(@{
-      @"event": @"close",
-    });
-  }
+    _currentController = nil;
+
+    if (_eventSink) {
+        _eventSink(@{ @"event": @"close" });
+    }
 }
 
 - (void)safariViewController:(SFSafariViewController *)controller initialLoadDidRedirectToURL:(NSURL *)URL {
-  if (_eventSink) {
-    _eventSink(@{
-      @"event": @"redirect",
-      @"url": URL.absoluteString
-    });
-  }
+    if (_eventSink) {
+        _eventSink(@{
+            @"event": @"redirect",
+            @"url": URL.absoluteString
+        });
+    }
 }
 
 @end

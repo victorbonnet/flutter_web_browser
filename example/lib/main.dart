@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -19,16 +20,24 @@ class _MyAppState extends State<MyApp> {
 
   List<BrowserEvent> _events = [];
 
+  StreamSubscription<BrowserEvent>? _browserEvents;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
-    FlutterWebBrowser.events().listen((event) {
+    _browserEvents = FlutterWebBrowser.events().listen((event) {
       setState(() {
         _events.add(event);
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _browserEvents?.cancel();
+
+    super.dispose();
   }
 
   @override
