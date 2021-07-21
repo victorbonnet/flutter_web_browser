@@ -137,9 +137,6 @@
 
 @end
 
-# pragma mark - UIColor(HexString)
-
-
 @implementation UIColor(HexString)
 
 + (UIColor *) colorWithHexString: (NSString *) hexString {
