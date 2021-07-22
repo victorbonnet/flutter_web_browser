@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/services.dart';
@@ -62,12 +63,69 @@ extension _hexColor on Color {
   }
 }
 
+/// When supported, the built-in browser can notify of various events.
+abstract class BrowserEvent {
+  // Convenience constructor.
+  static BrowserEvent? fromMap(Map<String, dynamic> map) {
+    if (map['event'] == 'redirect') {
+      return RedirectEvent(Uri.parse(map['url']));
+    }
+    if (map['event'] == 'close') {
+      return CloseEvent();
+    }
+
+    return null;
+  }
+}
+
+/// Describes a redirect.
+class RedirectEvent extends BrowserEvent {
+  RedirectEvent(this.url);
+
+  /// New URL which is now visible.
+  final Uri url;
+}
+
+/// Describes a close event (e.g. when the user closes the tab
+/// or the [FlutterWebBrowser.close] method was invoked).
+class CloseEvent extends BrowserEvent {}
+
 class FlutterWebBrowser {
-  static const MethodChannel _channel =
-      const MethodChannel('flutter_web_browser');
+  static const _NS = 'flutter_web_browser';
+  static const MethodChannel _channel = const MethodChannel(_NS);
+  static const EventChannel _eventChannel = const EventChannel('$_NS/events');
 
   static Future<bool> warmup() async {
     return await _channel.invokeMethod<bool>('warmup') ?? true;
+  }
+
+  /// Closes the currently open browser.
+  ///
+  /// This function will emit a [CloseEvent], which can be observed using [events].
+  ///
+  /// Only supported on iOS. Will not do anything on other platforms.
+  static Future<void> close() async {
+    if (!Platform.isIOS) {
+      return;
+    }
+
+    await _channel.invokeMethod<void>('close');
+  }
+
+  /// Returns a stream of browser events which were observed while it was open.
+  ///
+  /// See [CloseEvent] & [RedirectEvent] for details on the events.
+  ///
+  /// Only supported on iOS. Returns a empty stream other platforms.
+  static Stream<BrowserEvent> events() {
+    if (!Platform.isIOS) {
+      return Stream.empty();
+    }
+
+    return _eventChannel
+        .receiveBroadcastStream()
+        .map<Map<String, String>>((event) => Map<String, String>.from(event))
+        .map((event) => BrowserEvent.fromMap(event)!);
   }
 
   static Future<void> openWebPage({
