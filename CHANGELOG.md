@@ -1,3 +1,6 @@
+## [0.15.0]
+* Add Safari redirect and close events
+
 ## [0.14.0]
 * Opt into null-safety
 
