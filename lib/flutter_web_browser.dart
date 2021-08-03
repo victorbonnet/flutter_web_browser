@@ -34,13 +34,20 @@ enum CustomTabsColorScheme {
   dark, // 0x00000002
 }
 
+enum CustomTabsShareState {
+  default_, // 0x00000000
+  on, // 0x00000001
+  off, // 0x00000002
+}
+
 class CustomTabsOptions {
   final CustomTabsColorScheme colorScheme;
   final Color? toolbarColor;
   final Color? secondaryToolbarColor;
   final Color? navigationBarColor;
   final bool instantAppsEnabled;
-  final bool addDefaultShareMenuItem;
+  final bool? addDefaultShareMenuItem;
+  final CustomTabsShareState shareState;
   final bool showTitle;
   final bool urlBarHidingEnabled;
 
@@ -50,7 +57,8 @@ class CustomTabsOptions {
     this.secondaryToolbarColor,
     this.navigationBarColor,
     this.instantAppsEnabled = false,
-    this.addDefaultShareMenuItem = false,
+    @Deprecated('Use shareState instead') this.addDefaultShareMenuItem,
+    this.shareState = CustomTabsShareState.default_,
     this.showTitle = false,
     this.urlBarHidingEnabled = false,
   });
@@ -143,7 +151,10 @@ class FlutterWebBrowser {
         'secondaryToolbarColor':
             customTabsOptions.secondaryToolbarColor?.hexColor,
         'instantAppsEnabled': customTabsOptions.instantAppsEnabled,
-        'addDefaultShareMenuItem': customTabsOptions.addDefaultShareMenuItem,
+        'shareState': (_convertAddDefaultShareMenuItemToShareState(
+                    customTabsOptions.addDefaultShareMenuItem) ??
+                customTabsOptions.shareState)
+            .index,
         'showTitle': customTabsOptions.showTitle,
         'urlBarHidingEnabled': customTabsOptions.urlBarHidingEnabled,
       },
@@ -159,5 +170,19 @@ class FlutterWebBrowser {
         'dismissButtonStyle': safariVCOptions.dismissButtonStyle?.index,
       },
     });
+  }
+
+  static CustomTabsShareState? _convertAddDefaultShareMenuItemToShareState(
+    bool? addDefaultShareMenuItem,
+  ) {
+    if (addDefaultShareMenuItem != null) {
+      if (addDefaultShareMenuItem) {
+        return CustomTabsShareState.on;
+      } else {
+        return CustomTabsShareState.off;
+      }
+    }
+
+    return null;
   }
 }

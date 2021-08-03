@@ -37,44 +37,48 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
 
   private void openUrl(MethodCall call, Result result) {
     if (activity == null) {
-      result.error("no_activity", "Plugin is only available within a activity context", null);
+      result.error("no_activity", "Plugin is only available within an activity context", null);
       return;
     }
     String url = call.argument("url");
     HashMap<String, Object> options = call.<HashMap<String, Object>>argument("android_options");
 
-    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+    CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
 
-    builder.setColorScheme((Integer) options.get("colorScheme"));
+    intentBuilder.setColorScheme((Integer) options.get("colorScheme"));
+
+    CustomTabColorSchemeParams.Builder colorSchemeParamsBuilder = new CustomTabColorSchemeParams.Builder();
 
     String navigationBarColor = (String)options.get("navigationBarColor");
     if (navigationBarColor != null) {
-      builder.setNavigationBarColor(Color.parseColor(navigationBarColor));
+      colorSchemeParamsBuilder.setNavigationBarColor(Color.parseColor(navigationBarColor));
     }
 
     String toolbarColor = (String)options.get("toolbarColor");
     if (toolbarColor != null) {
-      builder.setToolbarColor(Color.parseColor(toolbarColor));
+      colorSchemeParamsBuilder.setToolbarColor(Color.parseColor(toolbarColor));
     }
 
     String secondaryToolbarColor = (String)options.get("secondaryToolbarColor");
     if (secondaryToolbarColor != null) {
-      builder.setSecondaryToolbarColor(Color.parseColor(secondaryToolbarColor));
+      colorSchemeParamsBuilder.setSecondaryToolbarColor(Color.parseColor(secondaryToolbarColor));
     }
 
-    builder.setInstantAppsEnabled((Boolean) options.get("instantAppsEnabled"));
+    CustomTabColorSchemeParams colorSchemeParams = colorSchemeParamsBuilder.build();
+    intentBuilder.setDefaultColorSchemeParams(colorSchemeParams);
 
-    if ((Boolean) options.get("addDefaultShareMenuItem")) {
-      builder.addDefaultShareMenuItem();
+    intentBuilder.setInstantAppsEnabled((Boolean) options.get("instantAppsEnabled"));
+
+    Integer shareState = (Integer)options.get("shareState");
+    if (shareState != null) {
+      intentBuilder.setShareState(shareState);
     }
 
-    builder.setShowTitle((Boolean) options.get("showTitle"));
+    intentBuilder.setShowTitle((Boolean) options.get("showTitle"));
 
-    if ((Boolean) options.get("urlBarHidingEnabled")) {
-      builder.enableUrlBarHiding();
-    }
+    intentBuilder.setUrlBarHidingEnabled((Boolean) options.get("urlBarHidingEnabled"));
 
-    CustomTabsIntent customTabsIntent = builder.build();
+    CustomTabsIntent customTabsIntent = intentBuilder.build();
     customTabsIntent.intent.setPackage(getPackageName());
     customTabsIntent.launchUrl(activity, Uri.parse(url));
 
