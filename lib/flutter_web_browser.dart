@@ -40,6 +40,21 @@ enum CustomTabsShareState {
   off, // 0x00000002
 }
 
+extension CustomTabsShareStateExtension on CustomTabsShareState {
+  static CustomTabsShareState? fromAddDefaultShareMenuItem(
+      {bool? addDefaultShareMenuItem}) {
+    if (addDefaultShareMenuItem != null) {
+      if (addDefaultShareMenuItem) {
+        return CustomTabsShareState.on;
+      } else {
+        return CustomTabsShareState.off;
+      }
+    }
+
+    return null;
+  }
+}
+
 class CustomTabsOptions {
   final CustomTabsColorScheme colorScheme;
   final Color? toolbarColor;
@@ -47,7 +62,7 @@ class CustomTabsOptions {
   final Color? navigationBarColor;
   final bool instantAppsEnabled;
   final bool? addDefaultShareMenuItem;
-  final CustomTabsShareState shareState;
+  final CustomTabsShareState? shareState;
   final bool showTitle;
   final bool urlBarHidingEnabled;
 
@@ -58,7 +73,7 @@ class CustomTabsOptions {
     this.navigationBarColor,
     this.instantAppsEnabled = false,
     @Deprecated('Use shareState instead') this.addDefaultShareMenuItem,
-    this.shareState = CustomTabsShareState.default_,
+    this.shareState,
     this.showTitle = false,
     this.urlBarHidingEnabled = false,
   });
@@ -142,6 +157,14 @@ class FlutterWebBrowser {
     SafariViewControllerOptions safariVCOptions =
         const SafariViewControllerOptions(),
   }) {
+    final CustomTabsShareState customTabsShareState =
+        customTabsOptions.shareState ??
+            CustomTabsShareStateExtension.fromAddDefaultShareMenuItem(
+              addDefaultShareMenuItem:
+                  customTabsOptions.addDefaultShareMenuItem,
+            ) ??
+            CustomTabsShareState.default_;
+
     return _channel.invokeMethod('openWebPage', {
       "url": url,
       'android_options': {
@@ -151,10 +174,7 @@ class FlutterWebBrowser {
         'secondaryToolbarColor':
             customTabsOptions.secondaryToolbarColor?.hexColor,
         'instantAppsEnabled': customTabsOptions.instantAppsEnabled,
-        'shareState': (_convertAddDefaultShareMenuItemToShareState(
-                    customTabsOptions.addDefaultShareMenuItem) ??
-                customTabsOptions.shareState)
-            .index,
+        'shareState': customTabsShareState.index,
         'showTitle': customTabsOptions.showTitle,
         'urlBarHidingEnabled': customTabsOptions.urlBarHidingEnabled,
       },
@@ -170,19 +190,5 @@ class FlutterWebBrowser {
         'dismissButtonStyle': safariVCOptions.dismissButtonStyle?.index,
       },
     });
-  }
-
-  static CustomTabsShareState? _convertAddDefaultShareMenuItemToShareState(
-    bool? addDefaultShareMenuItem,
-  ) {
-    if (addDefaultShareMenuItem != null) {
-      if (addDefaultShareMenuItem) {
-        return CustomTabsShareState.on;
-      } else {
-        return CustomTabsShareState.off;
-      }
-    }
-
-    return null;
   }
 }
