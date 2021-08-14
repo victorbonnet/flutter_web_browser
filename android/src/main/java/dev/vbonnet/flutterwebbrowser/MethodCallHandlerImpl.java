@@ -43,46 +43,65 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
     String url = call.argument("url");
     HashMap<String, Object> options = call.<HashMap<String, Object>>argument("android_options");
 
-    CustomTabsIntent.Builder intentBuilder = new CustomTabsIntent.Builder();
+    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
 
-    intentBuilder.setColorScheme((Integer) options.get("colorScheme"));
+    builder.setColorScheme((Integer) options.get("colorScheme"));
 
-    CustomTabColorSchemeParams.Builder colorSchemeParamsBuilder = new CustomTabColorSchemeParams.Builder();
-
-    String navigationBarColor = (String)options.get("navigationBarColor");
-    if (navigationBarColor != null) {
-      colorSchemeParamsBuilder.setNavigationBarColor(Color.parseColor(navigationBarColor));
+    HashMap<String, Object> lightColorSchemeParamsMap = (HashMap<String, Object>) options.get("lightColorSchemeParams");
+    if (lightColorSchemeParamsMap != null) {
+      CustomTabColorSchemeParams lightColorSchemeParams = mapColorSchemeParams(lightColorSchemeParamsMap);
+      builder.setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_LIGHT, lightColorSchemeParams);
     }
 
-    String toolbarColor = (String)options.get("toolbarColor");
-    if (toolbarColor != null) {
-      colorSchemeParamsBuilder.setToolbarColor(Color.parseColor(toolbarColor));
+    HashMap<String, Object> darkColorSchemeParamsMap = (HashMap<String, Object>) options.get("darkColorSchemeParams");
+    if (darkColorSchemeParamsMap != null) {
+      CustomTabColorSchemeParams darkColorSchemeParams = mapColorSchemeParams(darkColorSchemeParamsMap);
+      builder.setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK, darkColorSchemeParams);
     }
 
-    String secondaryToolbarColor = (String)options.get("secondaryToolbarColor");
-    if (secondaryToolbarColor != null) {
-      colorSchemeParamsBuilder.setSecondaryToolbarColor(Color.parseColor(secondaryToolbarColor));
+    HashMap<String, Object> defaultColorSchemeParamsMap = (HashMap<String, Object>) options.get("defaultColorSchemeParams");
+    if (defaultColorSchemeParamsMap != null) {
+      CustomTabColorSchemeParams defaultColorSchemeParams = mapColorSchemeParams(defaultColorSchemeParamsMap);
+      builder.setDefaultColorSchemeParams(defaultColorSchemeParams);
     }
 
-    CustomTabColorSchemeParams colorSchemeParams = colorSchemeParamsBuilder.build();
-    intentBuilder.setDefaultColorSchemeParams(colorSchemeParams);
+    builder.setInstantAppsEnabled((Boolean) options.get("instantAppsEnabled"));
 
-    intentBuilder.setInstantAppsEnabled((Boolean) options.get("instantAppsEnabled"));
-
-    Integer shareState = (Integer)options.get("shareState");
+    Integer shareState = (Integer) options.get("shareState");
     if (shareState != null) {
-      intentBuilder.setShareState(shareState);
+      builder.setShareState(shareState);
     }
 
-    intentBuilder.setShowTitle((Boolean) options.get("showTitle"));
+    builder.setShowTitle((Boolean) options.get("showTitle"));
 
-    intentBuilder.setUrlBarHidingEnabled((Boolean) options.get("urlBarHidingEnabled"));
+    builder.setUrlBarHidingEnabled((Boolean) options.get("urlBarHidingEnabled"));
 
-    CustomTabsIntent customTabsIntent = intentBuilder.build();
+    CustomTabsIntent customTabsIntent = builder.build();
     customTabsIntent.intent.setPackage(getPackageName());
     customTabsIntent.launchUrl(activity, Uri.parse(url));
 
     result.success(null);
+  }
+
+  private CustomTabColorSchemeParams mapColorSchemeParams(HashMap<String, Object> options) {
+    CustomTabColorSchemeParams.Builder builder = new CustomTabColorSchemeParams.Builder();
+
+    String toolbarColor = (String) options.get("toolbarColor");
+    if (toolbarColor != null) {
+      builder.setToolbarColor(Color.parseColor(toolbarColor));
+    }
+
+    String secondaryToolbarColor = (String) options.get("secondaryToolbarColor");
+    if (secondaryToolbarColor != null) {
+      builder.setSecondaryToolbarColor(Color.parseColor(secondaryToolbarColor));
+    }
+
+    String navigationBarColor = (String) options.get("navigationBarColor");
+    if (navigationBarColor != null) {
+      builder.setNavigationBarColor(Color.parseColor(navigationBarColor));
+    }
+
+    return builder.build();
   }
 
   private void warmup(Result result) {

@@ -55,11 +55,40 @@ extension CustomTabsShareStateExtension on CustomTabsShareState {
   }
 }
 
+class CustomTabsColorSchemeParams {
+  final Color? toolbarColor;
+  final Color? secondaryToolbarColor;
+  final Color? navigationBarColor;
+
+  const CustomTabsColorSchemeParams({
+    this.toolbarColor,
+    this.secondaryToolbarColor,
+    this.navigationBarColor,
+  });
+
+  Map<String, dynamic> toMethodChannelArgumentMap({
+    Color? deprecatedToolbarColor,
+    Color? deprecatedSecondaryToolbarColor,
+    Color? deprecatedNavigationBarColor,
+  }) {
+    return {
+      'toolbarColor': (toolbarColor ?? deprecatedToolbarColor)?.hexColor,
+      'secondaryToolbarColor':
+          (secondaryToolbarColor ?? deprecatedSecondaryToolbarColor)?.hexColor,
+      'navigationBarColor':
+          (navigationBarColor ?? deprecatedNavigationBarColor)?.hexColor,
+    };
+  }
+}
+
 class CustomTabsOptions {
   final CustomTabsColorScheme colorScheme;
   final Color? toolbarColor;
   final Color? secondaryToolbarColor;
   final Color? navigationBarColor;
+  final CustomTabsColorSchemeParams? lightColorSchemeParams;
+  final CustomTabsColorSchemeParams? darkColorSchemeParams;
+  final CustomTabsColorSchemeParams? defaultColorSchemeParams;
   final bool instantAppsEnabled;
   final bool? addDefaultShareMenuItem;
   final CustomTabsShareState? shareState;
@@ -68,9 +97,15 @@ class CustomTabsOptions {
 
   const CustomTabsOptions({
     this.colorScheme = CustomTabsColorScheme.system,
-    this.toolbarColor,
-    this.secondaryToolbarColor,
-    this.navigationBarColor,
+    @Deprecated('Use defaultColorSchemeParams.toolbarColor instead')
+        this.toolbarColor,
+    @Deprecated('Use defaultColorSchemeParams.secondaryToolbarColor instead')
+        this.secondaryToolbarColor,
+    @Deprecated('Use defaultColorSchemeParams.navigationBarColor instead')
+        this.navigationBarColor,
+    this.lightColorSchemeParams,
+    this.darkColorSchemeParams,
+    this.defaultColorSchemeParams,
     this.instantAppsEnabled = false,
     @Deprecated('Use shareState instead') this.addDefaultShareMenuItem,
     this.shareState,
@@ -157,6 +192,13 @@ class FlutterWebBrowser {
     SafariViewControllerOptions safariVCOptions =
         const SafariViewControllerOptions(),
   }) {
+    final CustomTabsColorSchemeParams customTabsDefaultColorSchemeParams =
+        customTabsOptions.defaultColorSchemeParams ??
+            CustomTabsColorSchemeParams(
+              toolbarColor: customTabsOptions.toolbarColor,
+              secondaryToolbarColor: customTabsOptions.secondaryToolbarColor,
+              navigationBarColor: customTabsOptions.navigationBarColor,
+            );
     final CustomTabsShareState customTabsShareState =
         customTabsOptions.shareState ??
             CustomTabsShareStateExtension.fromAddDefaultShareMenuItem(
@@ -169,10 +211,12 @@ class FlutterWebBrowser {
       "url": url,
       'android_options': {
         'colorScheme': customTabsOptions.colorScheme.index,
-        'navigationBarColor': customTabsOptions.navigationBarColor?.hexColor,
-        'toolbarColor': customTabsOptions.toolbarColor?.hexColor,
-        'secondaryToolbarColor':
-            customTabsOptions.secondaryToolbarColor?.hexColor,
+        'lightColorSchemeParams': customTabsOptions.lightColorSchemeParams
+            ?.toMethodChannelArgumentMap(),
+        'darkColorSchemeParams': customTabsOptions.darkColorSchemeParams
+            ?.toMethodChannelArgumentMap(),
+        'defaultColorSchemeParams':
+            customTabsDefaultColorSchemeParams.toMethodChannelArgumentMap(),
         'instantAppsEnabled': customTabsOptions.instantAppsEnabled,
         'shareState': customTabsShareState.index,
         'showTitle': customTabsOptions.showTitle,

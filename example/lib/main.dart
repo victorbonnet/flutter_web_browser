@@ -78,9 +78,11 @@ class _MyAppState extends State<MyApp> {
                         url: "https://flutter.io/",
                         customTabsOptions: CustomTabsOptions(
                           colorScheme: CustomTabsColorScheme.dark,
-                          toolbarColor: Colors.deepPurple,
-                          secondaryToolbarColor: Colors.green,
-                          navigationBarColor: Colors.amber,
+                          darkColorSchemeParams: CustomTabsColorSchemeParams(
+                            toolbarColor: Colors.deepPurple,
+                            secondaryToolbarColor: Colors.green,
+                            navigationBarColor: Colors.amber,
+                          ),
                           shareState: CustomTabsShareState.on,
                           instantAppsEnabled: true,
                           showTitle: true,
