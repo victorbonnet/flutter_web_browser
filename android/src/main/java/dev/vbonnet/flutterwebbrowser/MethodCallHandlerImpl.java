@@ -101,6 +101,11 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
       builder.setNavigationBarColor(Color.parseColor(navigationBarColor));
     }
 
+    String navigationBarDividerColor = (String) options.get("navigationBarDividerColor");
+    if (navigationBarDividerColor != null) {
+      builder.setNavigationBarDividerColor(Color.parseColor(navigationBarDividerColor));
+    }
+
     return builder.build();
   }
 

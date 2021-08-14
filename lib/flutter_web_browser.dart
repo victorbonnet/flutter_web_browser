@@ -59,11 +59,13 @@ class CustomTabsColorSchemeParams {
   final Color? toolbarColor;
   final Color? secondaryToolbarColor;
   final Color? navigationBarColor;
+  final Color? navigationBarDividerColor;
 
   const CustomTabsColorSchemeParams({
     this.toolbarColor,
     this.secondaryToolbarColor,
     this.navigationBarColor,
+    this.navigationBarDividerColor,
   });
 
   Map<String, dynamic> toMethodChannelArgumentMap({
@@ -77,6 +79,7 @@ class CustomTabsColorSchemeParams {
           (secondaryToolbarColor ?? deprecatedSecondaryToolbarColor)?.hexColor,
       'navigationBarColor':
           (navigationBarColor ?? deprecatedNavigationBarColor)?.hexColor,
+      'navigationBarDividerColor': navigationBarDividerColor?.hexColor,
     };
   }
 }

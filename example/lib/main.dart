@@ -82,6 +82,7 @@ class _MyAppState extends State<MyApp> {
                             toolbarColor: Colors.deepPurple,
                             secondaryToolbarColor: Colors.green,
                             navigationBarColor: Colors.amber,
+                            navigationBarDividerColor: Colors.cyan,
                           ),
                           shareState: CustomTabsShareState.on,
                           instantAppsEnabled: true,
