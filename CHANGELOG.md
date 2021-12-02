@@ -1,3 +1,7 @@
+## [0.16.0]
+* Upgrade Android broswer library
+* Update README
+
 ## [0.15.0]
 * Add Safari redirect and close events
 
