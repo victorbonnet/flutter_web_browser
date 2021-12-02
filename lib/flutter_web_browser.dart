@@ -34,23 +34,84 @@ enum CustomTabsColorScheme {
   dark, // 0x00000002
 }
 
+enum CustomTabsShareState {
+  default_, // 0x00000000
+  on, // 0x00000001
+  off, // 0x00000002
+}
+
+extension CustomTabsShareStateExtension on CustomTabsShareState {
+  static CustomTabsShareState? fromAddDefaultShareMenuItem(
+      {bool? addDefaultShareMenuItem}) {
+    if (addDefaultShareMenuItem != null) {
+      if (addDefaultShareMenuItem) {
+        return CustomTabsShareState.on;
+      } else {
+        return CustomTabsShareState.off;
+      }
+    }
+
+    return null;
+  }
+}
+
+class CustomTabsColorSchemeParams {
+  final Color? toolbarColor;
+  final Color? secondaryToolbarColor;
+  final Color? navigationBarColor;
+  final Color? navigationBarDividerColor;
+
+  const CustomTabsColorSchemeParams({
+    this.toolbarColor,
+    this.secondaryToolbarColor,
+    this.navigationBarColor,
+    this.navigationBarDividerColor,
+  });
+
+  Map<String, dynamic> toMethodChannelArgumentMap({
+    Color? deprecatedToolbarColor,
+    Color? deprecatedSecondaryToolbarColor,
+    Color? deprecatedNavigationBarColor,
+  }) {
+    return {
+      'toolbarColor': (toolbarColor ?? deprecatedToolbarColor)?.hexColor,
+      'secondaryToolbarColor':
+          (secondaryToolbarColor ?? deprecatedSecondaryToolbarColor)?.hexColor,
+      'navigationBarColor':
+          (navigationBarColor ?? deprecatedNavigationBarColor)?.hexColor,
+      'navigationBarDividerColor': navigationBarDividerColor?.hexColor,
+    };
+  }
+}
+
 class CustomTabsOptions {
   final CustomTabsColorScheme colorScheme;
   final Color? toolbarColor;
   final Color? secondaryToolbarColor;
   final Color? navigationBarColor;
+  final CustomTabsColorSchemeParams? lightColorSchemeParams;
+  final CustomTabsColorSchemeParams? darkColorSchemeParams;
+  final CustomTabsColorSchemeParams? defaultColorSchemeParams;
   final bool instantAppsEnabled;
-  final bool addDefaultShareMenuItem;
+  final bool? addDefaultShareMenuItem;
+  final CustomTabsShareState? shareState;
   final bool showTitle;
   final bool urlBarHidingEnabled;
 
   const CustomTabsOptions({
     this.colorScheme = CustomTabsColorScheme.system,
-    this.toolbarColor,
-    this.secondaryToolbarColor,
-    this.navigationBarColor,
+    @Deprecated('Use defaultColorSchemeParams.toolbarColor instead')
+        this.toolbarColor,
+    @Deprecated('Use defaultColorSchemeParams.secondaryToolbarColor instead')
+        this.secondaryToolbarColor,
+    @Deprecated('Use defaultColorSchemeParams.navigationBarColor instead')
+        this.navigationBarColor,
+    this.lightColorSchemeParams,
+    this.darkColorSchemeParams,
+    this.defaultColorSchemeParams,
     this.instantAppsEnabled = false,
-    this.addDefaultShareMenuItem = false,
+    @Deprecated('Use shareState instead') this.addDefaultShareMenuItem,
+    this.shareState,
     this.showTitle = false,
     this.urlBarHidingEnabled = false,
   });
@@ -134,16 +195,33 @@ class FlutterWebBrowser {
     SafariViewControllerOptions safariVCOptions =
         const SafariViewControllerOptions(),
   }) {
+    final CustomTabsColorSchemeParams customTabsDefaultColorSchemeParams =
+        customTabsOptions.defaultColorSchemeParams ??
+            CustomTabsColorSchemeParams(
+              toolbarColor: customTabsOptions.toolbarColor,
+              secondaryToolbarColor: customTabsOptions.secondaryToolbarColor,
+              navigationBarColor: customTabsOptions.navigationBarColor,
+            );
+    final CustomTabsShareState customTabsShareState =
+        customTabsOptions.shareState ??
+            CustomTabsShareStateExtension.fromAddDefaultShareMenuItem(
+              addDefaultShareMenuItem:
+                  customTabsOptions.addDefaultShareMenuItem,
+            ) ??
+            CustomTabsShareState.default_;
+
     return _channel.invokeMethod('openWebPage', {
       "url": url,
       'android_options': {
         'colorScheme': customTabsOptions.colorScheme.index,
-        'navigationBarColor': customTabsOptions.navigationBarColor?.hexColor,
-        'toolbarColor': customTabsOptions.toolbarColor?.hexColor,
-        'secondaryToolbarColor':
-            customTabsOptions.secondaryToolbarColor?.hexColor,
+        'lightColorSchemeParams': customTabsOptions.lightColorSchemeParams
+            ?.toMethodChannelArgumentMap(),
+        'darkColorSchemeParams': customTabsOptions.darkColorSchemeParams
+            ?.toMethodChannelArgumentMap(),
+        'defaultColorSchemeParams':
+            customTabsDefaultColorSchemeParams.toMethodChannelArgumentMap(),
         'instantAppsEnabled': customTabsOptions.instantAppsEnabled,
-        'addDefaultShareMenuItem': customTabsOptions.addDefaultShareMenuItem,
+        'shareState': customTabsShareState.index,
         'showTitle': customTabsOptions.showTitle,
         'urlBarHidingEnabled': customTabsOptions.urlBarHidingEnabled,
       },

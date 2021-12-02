@@ -37,7 +37,7 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
 
   private void openUrl(MethodCall call, Result result) {
     if (activity == null) {
-      result.error("no_activity", "Plugin is only available within a activity context", null);
+      result.error("no_activity", "Plugin is only available within an activity context", null);
       return;
     }
     String url = call.argument("url");
@@ -47,38 +47,66 @@ public class MethodCallHandlerImpl implements MethodCallHandler {
 
     builder.setColorScheme((Integer) options.get("colorScheme"));
 
-    String navigationBarColor = (String)options.get("navigationBarColor");
-    if (navigationBarColor != null) {
-      builder.setNavigationBarColor(Color.parseColor(navigationBarColor));
+    HashMap<String, Object> lightColorSchemeParamsMap = (HashMap<String, Object>) options.get("lightColorSchemeParams");
+    if (lightColorSchemeParamsMap != null) {
+      CustomTabColorSchemeParams lightColorSchemeParams = mapColorSchemeParams(lightColorSchemeParamsMap);
+      builder.setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_LIGHT, lightColorSchemeParams);
     }
 
-    String toolbarColor = (String)options.get("toolbarColor");
-    if (toolbarColor != null) {
-      builder.setToolbarColor(Color.parseColor(toolbarColor));
+    HashMap<String, Object> darkColorSchemeParamsMap = (HashMap<String, Object>) options.get("darkColorSchemeParams");
+    if (darkColorSchemeParamsMap != null) {
+      CustomTabColorSchemeParams darkColorSchemeParams = mapColorSchemeParams(darkColorSchemeParamsMap);
+      builder.setColorSchemeParams(CustomTabsIntent.COLOR_SCHEME_DARK, darkColorSchemeParams);
     }
 
-    String secondaryToolbarColor = (String)options.get("secondaryToolbarColor");
-    if (secondaryToolbarColor != null) {
-      builder.setSecondaryToolbarColor(Color.parseColor(secondaryToolbarColor));
+    HashMap<String, Object> defaultColorSchemeParamsMap = (HashMap<String, Object>) options.get("defaultColorSchemeParams");
+    if (defaultColorSchemeParamsMap != null) {
+      CustomTabColorSchemeParams defaultColorSchemeParams = mapColorSchemeParams(defaultColorSchemeParamsMap);
+      builder.setDefaultColorSchemeParams(defaultColorSchemeParams);
     }
 
     builder.setInstantAppsEnabled((Boolean) options.get("instantAppsEnabled"));
 
-    if ((Boolean) options.get("addDefaultShareMenuItem")) {
-      builder.addDefaultShareMenuItem();
+    Integer shareState = (Integer) options.get("shareState");
+    if (shareState != null) {
+      builder.setShareState(shareState);
     }
 
     builder.setShowTitle((Boolean) options.get("showTitle"));
 
-    if ((Boolean) options.get("urlBarHidingEnabled")) {
-      builder.enableUrlBarHiding();
-    }
+    builder.setUrlBarHidingEnabled((Boolean) options.get("urlBarHidingEnabled"));
 
     CustomTabsIntent customTabsIntent = builder.build();
     customTabsIntent.intent.setPackage(getPackageName());
     customTabsIntent.launchUrl(activity, Uri.parse(url));
 
     result.success(null);
+  }
+
+  private CustomTabColorSchemeParams mapColorSchemeParams(HashMap<String, Object> options) {
+    CustomTabColorSchemeParams.Builder builder = new CustomTabColorSchemeParams.Builder();
+
+    String toolbarColor = (String) options.get("toolbarColor");
+    if (toolbarColor != null) {
+      builder.setToolbarColor(Color.parseColor(toolbarColor));
+    }
+
+    String secondaryToolbarColor = (String) options.get("secondaryToolbarColor");
+    if (secondaryToolbarColor != null) {
+      builder.setSecondaryToolbarColor(Color.parseColor(secondaryToolbarColor));
+    }
+
+    String navigationBarColor = (String) options.get("navigationBarColor");
+    if (navigationBarColor != null) {
+      builder.setNavigationBarColor(Color.parseColor(navigationBarColor));
+    }
+
+    String navigationBarDividerColor = (String) options.get("navigationBarDividerColor");
+    if (navigationBarDividerColor != null) {
+      builder.setNavigationBarDividerColor(Color.parseColor(navigationBarDividerColor));
+    }
+
+    return builder.build();
   }
 
   private void warmup(Result result) {
