@@ -25,7 +25,7 @@ import 'package:flutter_web_browser/flutter_web_browser.dart';
 ```
 FlutterWebBrowser.openWebPage(
   url: "https://flutter.io/",
-  customTabsOptions: CustomTabsOptions(
+  customTabsOptions: const CustomTabsOptions(
     colorScheme: CustomTabsColorScheme.dark,
     toolbarColor: Colors.deepPurple,
     secondaryToolbarColor: Colors.green,
@@ -35,7 +35,7 @@ FlutterWebBrowser.openWebPage(
     showTitle: true,
     urlBarHidingEnabled: true,
   ),
-  safariVCOptions: SafariViewControllerOptions(
+  safariVCOptions: const SafariViewControllerOptions(
     barCollapsingEnabled: true,
     preferredBarTintColor: Colors.green,
     preferredControlTintColor: Colors.amber,
