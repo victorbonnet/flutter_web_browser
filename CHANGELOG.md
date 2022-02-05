@@ -1,3 +1,7 @@
+## [0.17.0]
+* Upgrade Android broswer library for Android 12 compatibility
+* Adjust Android compile SDK version to 31
+
 ## [0.16.0]
 * Upgrade Android broswer library
 * Update README
