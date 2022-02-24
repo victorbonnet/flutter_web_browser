@@ -1,3 +1,6 @@
+## [0.17.1]
+* Add option to define `modalPresentationStyle` in `SafariViewControllerOptions`. This allows to change the Presentation Style based on https://developer.apple.com/documentation/uikit/uimodalpresentationstyle
+
 ## [0.17.0]
 * Upgrade Android broswer library for Android 12 compatibility
 * Adjust Android compile SDK version to 31
