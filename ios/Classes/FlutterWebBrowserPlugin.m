@@ -70,6 +70,10 @@
                 
                 sfvc.modalPresentationCapturesStatusBarAppearance = [options[@"modalPresentationCapturesStatusBarAppearance"] boolValue];
                 
+                NSString *presentationStyle = options[@"modalPresentationStyle"];
+
+                [self setPresentationStyleFromInput:sfvc input:presentationStyle];
+                
                 sfvc.delegate = self;
 
                 [viewController presentViewController:sfvc animated:YES completion:nil];
@@ -133,6 +137,36 @@
             @"url": URL.absoluteString
         });
     }
+}
+
+- (void)setPresentationStyleFromInput:(UIViewController *)viewController input:(NSString *)input {
+  NSMutableDictionary *presentationStyles = [[NSMutableDictionary alloc] init];
+
+  if (@available(iOS 13.0, *)) {
+    [presentationStyles setObject:@"automatic"
+                           forKey:[NSNumber numberWithInt:UIModalPresentationAutomatic]];
+  }
+  [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationFullScreen]
+                         forKey:@"fullScreen"];
+  [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationPageSheet]
+                         forKey:@"pageSheet"];
+  [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationFormSheet]
+                         forKey:@"formSheet"];
+  [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationCurrentContext]
+                         forKey:@"currentContext"];
+  [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationOverFullScreen]
+                         forKey:@"overFullScreen"];
+  [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationOverCurrentContext]
+                         forKey:@"overCurrentContext"];
+  [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationPopover]
+                         forKey:@"popover"];
+
+  NSNumber *presentationStyle = [presentationStyles objectForKey:input];
+  if (presentationStyle != nil) {
+    viewController.modalPresentationStyle = presentationStyle.intValue;
+  } else {
+      viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+  }
 }
 
 @end
