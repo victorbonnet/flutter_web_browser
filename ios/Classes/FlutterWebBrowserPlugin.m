@@ -158,8 +158,10 @@
                          forKey:@"overFullScreen"];
   [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationOverCurrentContext]
                          forKey:@"overCurrentContext"];
-  [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationPopover]
-                         forKey:@"popover"];
+  if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+    [presentationStyles setObject:[NSNumber numberWithInt:UIModalPresentationPopover]
+                        forKey:@"popover"];
+  }
 
   NSNumber *presentationStyle = [presentationStyles objectForKey:input];
   if (presentationStyle != nil) {
