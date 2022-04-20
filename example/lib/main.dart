@@ -107,6 +107,7 @@ class _MyAppState extends State<MyApp> {
                           dismissButtonStyle:
                               SafariViewControllerDismissButtonStyle.close,
                           modalPresentationCapturesStatusBarAppearance: true,
+                          modalPresentationStyle: UIModalPresentationStyle.popover,
                         ),
                       );
                     },
