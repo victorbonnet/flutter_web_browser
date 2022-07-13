@@ -28,14 +28,35 @@
   [eventChannel setStreamHandler:instance];
 }
 
+- (UIWindow *)getKeyWindow {
+    if (@available(iOS 13.0, *)) {
+        NSSet *connectedScenes = [UIApplication sharedApplication].connectedScenes;
+        for (UIScene *scene in connectedScenes) {
+            UIWindowScene *windowScene = (UIWindowScene *)scene;
+            for (UIWindow *window in windowScene.windows) {
+                if (window.isKeyWindow) {
+                    return window;
+                }
+            }
+        }
+    } else {
+        NSPredicate *isKeyWindow = [NSPredicate predicateWithFormat:@"isKeyWindow == YES"];
+        return [[[UIApplication sharedApplication] windows] filteredArrayUsingPredicate:isKeyWindow].firstObject;
+    }
+    
+    return nil;
+}
+
+- (UIViewController *)getFlutterViewComtroller {
+    UIWindow *window = [self getKeyWindow];
+    return [window rootViewController];
+}
+
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
     if ([@"openWebPage" isEqualToString:call.method]) {
         NSString *url = call.arguments[@"url"];
         NSString *controlColorArg = call.arguments[@"ios_control_color"];
-        UIViewController *viewController = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
-        if (viewController.presentedViewController && !viewController.presentedViewController.isBeingDismissed ) {
-            viewController = viewController.presentedViewController;
-        }
+        UIViewController *viewController = [self getFlutterViewComtroller];
         NSURL *URL = [NSURL URLWithString:url];
         
         if (@available(iOS 9.0, *)) {
