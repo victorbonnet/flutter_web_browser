@@ -47,7 +47,7 @@
     return nil;
 }
 
-- (UIViewController *)getFlutterViewComtroller {
+- (UIViewController *)getFlutterViewController {
     UIWindow *window = [self getKeyWindow];
     return [window rootViewController];
 }
@@ -56,7 +56,7 @@
     if ([@"openWebPage" isEqualToString:call.method]) {
         NSString *url = call.arguments[@"url"];
         NSString *controlColorArg = call.arguments[@"ios_control_color"];
-        UIViewController *viewController = [self getFlutterViewComtroller];
+        UIViewController *viewController = [self getFlutterViewController];
         NSURL *URL = [NSURL URLWithString:url];
         
         if (@available(iOS 9.0, *)) {
