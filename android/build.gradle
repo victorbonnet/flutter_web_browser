@@ -24,6 +24,10 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 31
 
+    if (project.android.hasProperty("namespace")) {
+        namespace 'dev.vbonnet.flutterwebbrowser'
+    }
+
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 31
