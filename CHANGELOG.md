@@ -1,6 +1,10 @@
-## [0.17.2]
+## [0.17.3]
 
 - Fix: Remove references to deprecated v1 embedding classes
+
+## [0.17.2]
+
+- Fix build errors with Gradle 8
 
 ## [0.17.1]
 

@@ -14,7 +14,7 @@ Install the library from pub:
 
 ```
 dependencies:
-  flutter_web_browser: "^0.17.2"
+  flutter_web_browser: "^0.17.3"
 ```
 
 #### Import the library
