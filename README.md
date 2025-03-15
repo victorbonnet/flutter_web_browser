@@ -9,19 +9,22 @@ This plugin is under development, APIs might change.
 ## Getting Started
 
 #### Installation
+
 Install the library from pub:
+
 ```
 dependencies:
-  flutter_web_browser: "^0.17.1"
+  flutter_web_browser: "^0.17.2"
 ```
 
-
 #### Import the library
+
 ```
 import 'package:flutter_web_browser/flutter_web_browser.dart';
 ```
 
 ##### Open the web page
+
 ```
 FlutterWebBrowser.openWebPage(
   url: "https://flutter.io/",
@@ -45,6 +48,6 @@ FlutterWebBrowser.openWebPage(
 );
 ```
 
-
 ## License
+
 This project is licensed under the terms of the MIT license.
