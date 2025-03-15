@@ -8,31 +8,12 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
-import io.flutter.plugin.common.PluginRegistry.ViewDestroyListener;
-import io.flutter.view.FlutterNativeView;
 
 /** FlutterWebBrowserPlugin */
 public class FlutterWebBrowserPlugin implements FlutterPlugin, ActivityAware {
 
   private MethodChannel methodChannel;
   private MethodCallHandlerImpl methodCallHandler;
-
-  public static void registerWith(Registrar registrar) {
-    final FlutterWebBrowserPlugin plugin = new FlutterWebBrowserPlugin();
-    plugin.startListening(registrar.messenger());
-    if (registrar.activity() != null) {
-      plugin.setActivity(registrar.activity());
-    }
-    registrar.addViewDestroyListener(
-        new ViewDestroyListener() {
-          @Override
-          public boolean onViewDestroy(FlutterNativeView view) {
-            plugin.stopListening();
-            return false;
-          }
-        });
-  }
 
   @Override
   public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
